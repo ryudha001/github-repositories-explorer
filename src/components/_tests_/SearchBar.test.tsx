@@ -1,27 +1,34 @@
 import React from "react";
-import { screen, fireEvent } from "@testing-library/react";
-import { renderWithProviders } from "../../utils/test-utils";
+import { render, screen, fireEvent } from "@testing-library/react";
 import SearchBar from "../SearchBar";
-import { usersActions } from "../../store/slices";
 
-jest.mock("../../store/slices", () => ({
-  usersActions: {
-    fetchUsersRequest: jest.fn(),
-  },
-}));
+describe("SearchBar component", () => {
+  test("renders input with default placeholder", () => {
+    render(<SearchBar onChange={() => {}} />);
+    expect(
+      screen.getByPlaceholderText("Search GitHub users...")
+    ).toBeInTheDocument();
+  });
 
-describe("SearchBar Component", () => {
-  test("should update search query on input change", () => {
-    let searchQuery = "";
-    const setSearchQuery = jest.fn((newValue) => (searchQuery = newValue));
-
-    renderWithProviders(
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+  test("renders input with custom placeholder", () => {
+    render(
+      <SearchBar onChange={() => {}} placeholder="Search repositories..." />
     );
+    expect(
+      screen.getByPlaceholderText("Search repositories...")
+    ).toBeInTheDocument();
+  });
 
+  test("calls onChange when typing", () => {
+    const handleChange = jest.fn();
+    render(<SearchBar onChange={handleChange} />);
     const input = screen.getByPlaceholderText("Search GitHub users...");
     fireEvent.change(input, { target: { value: "React" } });
+    expect(handleChange).toHaveBeenCalledWith("React");
+  });
 
-    expect(setSearchQuery).toHaveBeenCalledWith("React");
+  test("renders input with initial value", () => {
+    render(<SearchBar onChange={() => {}} value="Initial value" />);
+    expect(screen.getByDisplayValue("Initial value")).toBeInTheDocument();
   });
 });

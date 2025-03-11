@@ -4,11 +4,10 @@ import UserItem from "./UserItem";
 import { RootState } from "../../../store";
 
 const UserList: React.FC = () => {
-  const { users, loading, error, searchQuery } = useSelector(
+  const { users, error, searchQuery } = useSelector(
     (state: RootState) => state.users
   );
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
